@@ -1,0 +1,36 @@
+name: Java CI with Maven & SonarQube
+# When executed?
+on:
+ push:
+   branches: [ "main", "develop" ]
+ pull_request:
+   branches: [ "main", "develop" ]
+jobs:
+ build-and-test:
+   # Environment to run
+   runs-on: ubuntu-latest
+
+
+   steps:
+   # 1.- Download code to server
+   - name: Checkout Code
+     uses: actions/checkout@v4
+
+
+   # 2.- Install Java (21 LTS as secure base or 25 if are available)
+   - name: Set up JDK 21
+     uses: actions/setup-java@v4
+     with:
+       java-version: '21'
+       distribution: 'temurin'
+       cache: maven # caching .m2 for faster
+
+
+   # 3.- Compile, test and verify code.
+   - name: Build and Test with Maven
+     run: mvn clean verify
+
+
+   # To SonarQube Cloud in the future
+   # - name: Analyze with SonarQube
+   #   run: mvn sonar:sonar -Dsonar.projectKey=mi-proyecto -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SONAR_TOKEN }}
